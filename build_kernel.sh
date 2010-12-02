@@ -12,8 +12,8 @@ do
 	rm update/*.zip update/kernel_update/zImage
 
 	make ARCH=arm geeknik_"$CONFIG"_defconfig
-	make -j6 CROSS_COMPILE=../arm-2009q3/bin/arm-none-linux-gnueabi- \
-		ARCH=arm HOSTCFLAGS="-g -O2"
+	make -j4 CROSS_COMPILE=../arm-2009q3/bin/arm-none-linux-gnueabi- \
+		ARCH=arm HOSTCFLAGS="-g -O3"
 
 	cp arch/arm/boot/zImage update/kernel_update/zImage
 	cd update
