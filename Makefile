@@ -353,7 +353,7 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -march=armv7-a -mtune=cortex-a8 -mthumb -mthumb-interwork \
                    -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=hard \
                    -mfp=neon -fno-gcse -ffast-math -mvectorize-with-neon-quad \
-                   -ftree-vectorizer-verbose=5 -ffast-math -fvect-cost-model
+                   -ftree-vectorize -ffast-math -fvect-cost-model
 
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 
