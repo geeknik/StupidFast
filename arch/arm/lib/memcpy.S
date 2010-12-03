@@ -52,6 +52,13 @@
 	.text
         .fpu     neon
 
+        .global memcpy
+        .type memcpy, %function
+        .align 4
+
+#define CACHE_LINE_SIZE 64
+#define PREFETCH_DISTANCE (CACHE_LINE_SIZE*4)
+
 /* Prototype: void *memcpy(void *dest, const void *src, size_t n); */
 
 ENTRY(memcpy)

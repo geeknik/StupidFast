@@ -350,7 +350,7 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
 		   -fno-delete-null-pointer-checks -marm \
-		   -march=armv7-a -mtune=cortex-a8 -mthumb -mthumb-interwork \
+		   -march=armv7-a -mtune=cortex-a8 \
                    -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=hard \
                    -mfp=neon -fno-gcse -ffast-math -mvectorize-with-neon-quad \
                    -ftree-vectorize -ffast-math -fvect-cost-model
