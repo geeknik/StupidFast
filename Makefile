@@ -349,11 +349,11 @@ KBUILD_CPPFLAGS := -D__KERNEL__ -Dlinux
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
-		   -fno-delete-null-pointer-checks -marm \
-		   -march=armv7-a -mtune=cortex-a8 \
-                   -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=hard \
-                   -mfp=neon -fno-gcse -ffast-math -mvectorize-with-neon-quad \
-                   -ftree-vectorize -ffast-math -fvect-cost-model
+		   -fno-delete-null-pointer-checks -marm -mthumb-interwork \
+		   -march=armv7-a -mcpu=cortex-a8 -mtune=cortex-a8 \
+                   -mfpu=neon -mfloat-abi=hard -mfp=neon \
+                   -fno-gcse -ffast-math -mvectorize-with-neon-quad \
+                   -ftree-vectorize -ffast-math -fvect-cost-model \
 
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 
