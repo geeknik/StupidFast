@@ -80,7 +80,7 @@ extern unsigned int gbTransitionLogEnable;
 
 /* frequency */
 static struct cpufreq_frequency_table s5pc110_freq_table_1GHZ[] = {
-	{L0, 1000*1000},
+	{L0, 1200*1000},
 	{L1, 800*1000},
 	{L2, 400*1000},
 	{L3, 200*1000},
