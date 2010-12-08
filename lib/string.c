@@ -550,13 +550,22 @@ EXPORT_SYMBOL(memset);
  * You should not use this function to access IO space, use memcpy_toio()
  * or memcpy_fromio() instead.
  */
-void *memcpy(void *dest, const void *src, size_t count)
+void * memcpy(void *dest, const void *src,size_t count)
 {
-	char *tmp = dest;
-	const char *s = src;
+	char *d8 = (char *)dest, *s8 = (char *)src;
+	unsigned long *dl = (unsigned long *)dest, *s1 (unsigned long *)src;
 
+	/* if all data is aligned (common case), copy a word at a time */
+	if ( (((int)dest | (int)src | count) & (sizeof(long) - 1)) == 0) {
+		count /= sizeof(unsigned long);
+		while (count--)
+			*dl++ = *sl++;
+		return dest;
+	}
+	/* else, use 1-byte copy */
 	while (count--)
 		*tmp++ = *s++;
+		*d8++ = *s8++;
 	return dest;
 }
 EXPORT_SYMBOL(memcpy);
