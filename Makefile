@@ -349,9 +349,10 @@ KBUILD_CPPFLAGS := -D__KERNEL__ -Dlinux
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
-		   -march=armv7-a -mcpu=cortex-a8 -mtune=cortex-a8 \
-                   -mfpu=neon -mfloat-abi=hard -mfp=neon -fno-gcse \
-                   -mvectorize-with-neon-quad -ftree-vectorize
+		   -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp -fno-gcse \
+		   -fprefetch-loop-arrays --param l2-cache-size=512 \
+		   --param l1-cache-size=64 --param simultaneous-prefetches=6 \
+		   --param prefetch-latency=400 --param l1-cache-line-size=64
 
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 
