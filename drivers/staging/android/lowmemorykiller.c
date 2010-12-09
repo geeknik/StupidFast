@@ -42,13 +42,37 @@ static size_t lowmem_minfree[6] = {
 static int lowmem_minfree_size = 4;
 static int lowmem_file_free = 23500;
 
-#define lowmem_print(level, x...) do { if(lowmem_debug_level >= (level)) printk(x); } while(0)
-
 module_param_named(cost, lowmem_shrinker.seeks, int, S_IRUGO | S_IWUSR);
 module_param_array_named(adj, lowmem_adj, int, &lowmem_adj_size, S_IRUGO | S_IWUSR);
 module_param_array_named(minfree, lowmem_minfree, uint, &lowmem_minfree_size, S_IRUGO | S_IWUSR);
 module_param_named(debug_level, lowmem_debug_level, uint, S_IRUGO | S_IWUSR);
 // module_param_named(filefree, lowmem_file_free, int, S_IRUGO | S_IWUSR);
+
+static struct task_struct *lowmem_deathpending;
+
+#define lowmem_print(level, x...) \
+do { \
+if (lowmem_debug_level >= (level)) \
+printk(x); \
+} while (0)
+
+static int
+task_notify_func(struct notifier_block *self, unsigned long val, void *data);
+
+static struct notifier_block task_nb = {
+.notifier_call = task_notify_func,
+};
+
+static int
+task_notify_func(struct notifier_block *self, unsigned long val, void *data)
+{
+struct task_struct *task = data;
+if (task == lowmem_deathpending) {
+lowmem_deathpending = NULL;
+task_handoff_unregister(&task_nb);
+}
+return NOTIFY_OK;
+}
 
 static int lowmem_shrink(int nr_to_scan, gfp_t gfp_mask)
 {
@@ -68,7 +92,19 @@ static int lowmem_shrink(int nr_to_scan, gfp_t gfp_mask)
 	//	int other_file = global_page_state(NR_FILE_PAGES);
 	int other_file = global_page_state(NR_INACTIVE_FILE) + global_page_state(NR_ACTIVE_FILE);
 
-	if(lowmem_adj_size < array_size)
+	/*
+	* If we already have a death outstanding, then
+	* bail out right away; indicating to vmscan
+	* that we have nothing further to offer on
+	* this pass.
+	*
+	* Note: Currently you need CONFIG_PROFILING
+	* for this to work correctly.
+	*/
+	if (lowmem_deathpending)
+	return 0;
+
+	if (lowmem_adj_size < array_size)
 		array_size = lowmem_adj_size;
 
 	if(lowmem_minfree_size < array_size)
@@ -123,6 +159,15 @@ static int lowmem_shrink(int nr_to_scan, gfp_t gfp_mask)
 		lowmem_print(1, "send sigkill to %d (%s), adj %d, size %d\n",
 		             selected->pid, selected->comm,
 		             selected->oomkilladj, selected_tasksize);
+	/*
+	* If CONFIG_PROFILING is off, then task_handoff_register()
+	* is a nop. In that case we don't want to stall the killer
+	* by setting lowmem_deathpending.
+	*/
+	#ifdef CONFIG_PROFILING
+		lowmem_deathpending = selected;
+		task_handoff_register(&task_nb);
+	#endif
 		force_sig(SIGKILL, selected);
 		rem -= selected_tasksize;
 	}
