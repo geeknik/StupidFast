@@ -43,6 +43,7 @@ static struct proc_dir_entry *binder_proc_dir_entry_proc;
 static struct hlist_head binder_dead_nodes;
 static HLIST_HEAD(binder_deferred_list);
 static DEFINE_MUTEX(binder_deferred_lock);
+static struct workqueue_struct *binder_deferred_workqueue;
 
 static int binder_read_proc_proc(
 	char *page, char **start, off_t off, int count, int *eof, void *data);
