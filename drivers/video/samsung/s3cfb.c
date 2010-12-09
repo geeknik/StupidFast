@@ -265,7 +265,7 @@ static int s3cfb_unmap_video_memory(struct fb_info *fb)
 	struct fb_fix_screeninfo *fix = &fb->fix;
 	struct s3cfb_window *win = fb->par;
 
-	if (fix->smem_start && (win->owner == DMA_MEM_FIMD)) {
+	if (fix->smem_start) {
 		dma_free_writecombine(fbdev->dev, fix->smem_len, \
 			fb->screen_base, fix->smem_start);
 		fix->smem_start = 0;
