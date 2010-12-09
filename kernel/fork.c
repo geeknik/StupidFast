@@ -138,13 +138,6 @@ static struct kmem_cache *mm_cachep;
 /* Notifier list called when a task struct is freed */
 static ATOMIC_NOTIFIER_HEAD(task_free_notifier);
 
-static void account_kernel_stack(struct thread_info *ti, int account)
-{
-  struct zone *zone = page_zone(virt_to_page(ti));
-
-  mod_zone_page_state(zone, NR_KERNEL_STACK, account);
-}
-
 void free_task(struct task_struct *tsk)
 {
 	prop_local_destroy_single(&tsk->dirties);
