@@ -347,12 +347,11 @@ LINUXINCLUDE    := -Iinclude \
 KBUILD_CPPFLAGS := -D__KERNEL__ -Dlinux
 
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
-		   -fno-strict-aliasing -fno-common \
-		   -Werror-implicit-function-declaration \
-		   -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp -fno-gcse \
-		   -fprefetch-loop-arrays --param l2-cache-size=512 \
-		   --param l1-cache-size=64 --param simultaneous-prefetches=6 \
-		   --param prefetch-latency=400 --param l1-cache-line-size=64
+		   -fno-align-jumps -marm -mthumb-interwork \
+                   -mcpu=cortex-a8 -mfpu=neon -mfpu=neon -mfp=neon \
+                   -fno-gcse -ffast-math -mvectorize-with-neon-quad \
+                   -ftree-vectorize -fvect-cost-model -mtune=cortex-a8 \
+                   -march=armv7-a -fprefetch-loop-arrays
 
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 
