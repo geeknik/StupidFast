@@ -847,7 +847,7 @@ again:
 			if (i < 0) {
 			  if (vb->free + vb->dirty == VMAP_BBMAP_BITS) {
 			    /* fragmented and no outstanding allocations */
-			    BUG_ON(vb->dirty != VMAP_BBMAP_BITS)l
+			    BUG_ON(vb->dirty != VMAP_BBMAP_BITS);
 			    purge = 1;
 			}
 			goto next;
