@@ -504,11 +504,6 @@ static ssize_t read_kmem(struct file *file, char __user *buf,
 		while (count > 0) {
 			int len = size_inside_page(p, count);
 
-			if (!is_vmalloc_or_module_addr((void *)p)) {
-			  err = -ENXIO;
-			  break;
-			}
-
 			len = vread(kbuf, (char *)p, len);
 			if (!len)
 				break;

@@ -523,7 +523,7 @@ static void __purge_vmap_area_lazy(unsigned long *start, unsigned long *end,
 		spin_lock(&purge_lock);
 
 	if (sync)
-	  purge_fragmented_blocks_allcpus();
+		purge_fragmented_blocks_allcpus();
 
 	rcu_read_lock();
 	list_for_each_entry_rcu(va, &vmap_area_list, list) {
@@ -666,7 +666,7 @@ struct vmap_block {
 	DECLARE_BITMAP(dirty_map, VMAP_BBMAP_BITS);
 	struct list_head free_list;
 	struct rcu_head rcu_head;
-	struct list_head_purge;
+	struct list_head purge;
 };
 
 /* Queue of free and dirty vmap blocks, for allocation and flushing purposes */
@@ -731,7 +731,6 @@ static struct vmap_block *new_vmap_block(gfp_t gfp_mask)
 	bitmap_zero(vb->alloc_map, VMAP_BBMAP_BITS);
 	bitmap_zero(vb->dirty_map, VMAP_BBMAP_BITS);
 	INIT_LIST_HEAD(&vb->free_list);
-	INIT_LIST_HEAD(&vb->dirty_list);
 
 	vb_idx = addr_to_vb_idx(va->va_start);
 	spin_lock(&vmap_block_tree_lock);
@@ -774,50 +773,50 @@ static void free_vmap_block(struct vmap_block *vb)
 
 static void purge_fragmented_blocks(int cpu)
 {
-  LIST_HEAD(purge);
-  struct vmap_block *vb;
-  struct vmap_block *n_vb;
-  struct vmap_block_queue *vbq = &per_cpu(vmap_block_queue, cpu);
+	LIST_HEAD(purge);
+	struct vmap_block *vb;
+	struct vmap_block *n_vb;
+	struct vmap_block_queue *vbq = &per_cpu(vmap_block_queue, cpu);
 
-  rcu_read_lock();
-  list_for_each_entry_rcu(vb, &vbq->free, free_list) {
+	rcu_read_lock();
+	list_for_each_entry_rcu(vb, &vbq->free, free_list) {
 
-    if (!(vb->free + vb->dirty == VMAP_BBMAP_BITS && vb->dirty != VMAP_BBMAP_BITS))
-      continue;
+		if (!(vb->free + vb->dirty == VMAP_BBMAP_BITS && vb->dirty != VMAP_BBMAP_BITS))
+			continue;
 
-    spin_lock(&vb->lock);
-    if (vb->free + vb->dirty == VMAP_BBMAP_BITS && vb->dirty != VMAP_BBMAP_BITS) {
-      vb->free = 0; /* prevent further allocs after releasing lock */
-      vb->dirty = VMAP_BBMAP_BITS; /* prevent purging it again */
-      bitmap_fill(vb->alloc_map, VMAP_BBMAP_BITS);
-      bitmap_fill(vb->dirty_map, VMAP_BBMAP_BITS);
-      spin_lock(&vbq->lock);
-      list_del_rcu(&vb->free_list);
-      spin_unlock(&vbq->lock);
-      spin_unlock(&vb->lock);
-      list_add_tail(&vb->purge, &purge);
-    } else
-      spin_unlock(&vb->lock);
-  }
-  rcu_read_unlock();
+		spin_lock(&vb->lock);
+		if (vb->free + vb->dirty == VMAP_BBMAP_BITS && vb->dirty != VMAP_BBMAP_BITS) {
+			vb->free = 0; /* prevent further allocs after releasing lock */
+			vb->dirty = VMAP_BBMAP_BITS; /* prevent purging it again */
+			bitmap_fill(vb->alloc_map, VMAP_BBMAP_BITS);
+			bitmap_fill(vb->dirty_map, VMAP_BBMAP_BITS);
+			spin_lock(&vbq->lock);
+			list_del_rcu(&vb->free_list);
+			spin_unlock(&vbq->lock);
+			spin_unlock(&vb->lock);
+			list_add_tail(&vb->purge, &purge);
+		} else
+			spin_unlock(&vb->lock);
+	}
+	rcu_read_unlock();
 
-  list_for_each_entry_safe(vb, n_vb, &purge, purge) {
-    list_del(&vb->purge);
-    free_vmap_block(vb);
-  }
+	list_for_each_entry_safe(vb, n_vb, &purge, purge) {
+		list_del(&vb->purge);
+		free_vmap_block(vb);
+	}
 }
 
 static void purge_fragmented_blocks_thiscpu(void)
 {
-  purge_fragmented_blocks(smp_processor_id());
+	purge_fragmented_blocks(smp_processor_id());
 }
 
 static void purge_fragmented_blocks_allcpus(void)
 {
-  int cpu;
+	int cpu;
 
-  for_each_possible_cpu(cpu)
-    purge_fragmented_blocks(cpu);
+	for_each_possible_cpu(cpu)
+		purge_fragmented_blocks(cpu);
 }
 
 static void *vb_alloc(unsigned long size, gfp_t gfp_mask)
@@ -840,35 +839,35 @@ again:
 
 		spin_lock(&vb->lock);
 		if (vb->free < 1UL << order)
-		  goto next;
+			goto next;
 		i = bitmap_find_free_region(vb->alloc_map,
 						VMAP_BBMAP_BITS, order);
 
-			if (i < 0) {
-			  if (vb->free + vb->dirty == VMAP_BBMAP_BITS) {
-			    /* fragmented and no outstanding allocations */
-			    BUG_ON(vb->dirty != VMAP_BBMAP_BITS);
-			    purge = 1;
+		if (i < 0) {
+			if (vb->free + vb->dirty == VMAP_BBMAP_BITS) {
+				/* fragmented and no outstanding allocations */
+				BUG_ON(vb->dirty != VMAP_BBMAP_BITS);
+				purge = 1;
 			}
 			goto next;
 		}
 		addr = vb->va->va_start + (i << PAGE_SHIFT);
-    		BUG_ON(addr_to_vb_idx(addr) !=
-        		addr_to_vb_idx(vb->va->va_start));
-    		vb->free -= 1UL << order;
-    		if (vb->free == 0) {
-      		   spin_lock(&vbq->lock);
-      		   list_del_rcu(&vb->free_list);
-      		   spin_unlock(&vbq->lock);
-    		}
-    		spin_unlock(&vb->lock);
-    		break;
+		BUG_ON(addr_to_vb_idx(addr) !=
+				addr_to_vb_idx(vb->va->va_start));
+		vb->free -= 1UL << order;
+		if (vb->free == 0) {
+			spin_lock(&vbq->lock);
+			list_del_rcu(&vb->free_list);
+			spin_unlock(&vbq->lock);
+		}
+		spin_unlock(&vb->lock);
+		break;
 next:
 		spin_unlock(&vb->lock);
 	}
 
 	if (purge)
-	  purge_fragmented_blocks_thiscpu();
+		purge_fragmented_blocks_thiscpu();
 
 	put_cpu_var(vmap_cpu_blocks);
 	rcu_read_unlock();
@@ -1895,4 +1894,3 @@ static int __init proc_vmalloc_init(void)
 }
 module_init(proc_vmalloc_init);
 #endif
-
