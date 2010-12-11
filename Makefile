@@ -347,11 +347,19 @@ LINUXINCLUDE    := -Iinclude \
 KBUILD_CPPFLAGS := -D__KERNEL__ -Dlinux
 
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
-		   -fno-align-jumps -marm -mthumb-interwork \
-                   -mcpu=cortex-a8 -mfpu=neon -mfpu=neon -mfp=neon \
-                   -fno-gcse -ffast-math -mvectorize-with-neon-quad \
-                   -ftree-vectorize -fvect-cost-model -mtune=cortex-a8 \
-                   -march=armv7-a -fprefetch-loop-arrays
+		   -fno-strict-aliasing -fno-common \
+		   -Werror-implicit-function-declaration \
+		   -fno-delete-null-pointer-checks \
+		   -march=armv7-a -mtune=cortex-a8 \
+                   -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=hard \
+		   -fno-gcse -marm -mvectorize-with-neon-quad \
+		   -mthumb -fomit-frame-pointer -ftree-vectorize \
+		   -funroll-loops -ffast-math -fsingle-precision-constant \
+		   --param l2-cache-size=512 \
+		   --param l1-cache-size=64 \
+		   --param simultaneous-prefetches=6 \
+		   --param prefetch-latency=400 \
+		   --param l1-cache-line-size=64
 
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 
@@ -529,7 +537,7 @@ all: vmlinux
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os
 else
-KBUILD_CFLAGS	+= -O3
+KBUILD_CFLAGS	+= -O2
 endif
 
 include $(srctree)/arch/$(SRCARCH)/Makefile
@@ -1604,3 +1612,4 @@ FORCE:
 # Declare the contents of the .PHONY variable as phony.  We keep that
 # information in a variable se we can use it in if_changed and friends.
 .PHONY: $(PHONY)
+

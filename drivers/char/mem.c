@@ -625,7 +625,7 @@ static ssize_t write_kmem(struct file * file, const char __user * buf,
 					return -EFAULT;
 				}
 			}
-			len = vwrite(kbuf, (char *)p, len);
+			vwrite(kbuf, (char *)p, len);
 			count -= len;
 			buf += len;
 			virtr += len;

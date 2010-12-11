@@ -294,7 +294,7 @@ mDNIe_data_type mDNIe_Video_CO_Mode[]=
 
 };
 
-mDNIe_data_type mDNIe_Outdoor_Mode[]= 
+mDNIe_data_type mDNIe_Outdoor_Mode[]=
 {
 	0x0084, 0x0090,
 	0x0090, 0x0000,
