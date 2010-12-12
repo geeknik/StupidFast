@@ -496,7 +496,8 @@ static void cpufreq_interactive_freq_down(struct work_struct *work)
   }
 }
 
-static ssize_t show_min_sample_time(struct cpufreq_policy *policy, char *buf)
+static ssize_t show_min_sample_time(struct cpufreq_policy *policy,
+	char *buf)
 {
 	return sprintf(buf, "%lu\n", min_sample_time);
 }
@@ -545,7 +546,8 @@ static int cpufreq_governor_interactive(struct cpufreq_policy *new_policy,
 		if (atomic_inc_return(&active_count) > 1)
 			return 0;
 
-		rc = sysfs_create_group(&new_policy->kobj, &interactive_attr_group);
+		rc = sysfs_create_group(&new_policy->kobj,
+			&interactive_attr_group);
 		if (rc)
 			return rc;
 		pm_idle_old = pm_idle;
