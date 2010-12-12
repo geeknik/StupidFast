@@ -128,7 +128,6 @@ EXPORT_SYMBOL(pm_power_off);
 void (*arm_pm_restart)(char str) = arm_machine_restart;
 EXPORT_SYMBOL_GPL(arm_pm_restart);
 
-
 /*
  * This is our default idle handler.  We need to disable
  * interrupts here to ensure we don't miss a wakeup call.
