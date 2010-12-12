@@ -281,7 +281,6 @@ static ssize_t store_ignore_nice_load(struct cpufreq_policy *policy,
 
 	if (input > 1)
 		input = 1;
-
 	mutex_lock(&dbs_mutex);
 	if (input == dbs_tuners_ins.ignore_nice) { /* nothing to do */
 		mutex_unlock(&dbs_mutex);
@@ -430,7 +429,6 @@ static void dbs_check_cpu(int cpu)
 
 		if (this_dbs_info->requested_freq > policy->max)
 			this_dbs_info->requested_freq = policy->max;
-
 		__cpufreq_driver_target(policy, this_dbs_info->requested_freq,
 			CPUFREQ_RELATION_H);
 		return;
@@ -668,3 +666,4 @@ fs_initcall(cpufreq_gov_dbs_init);
 module_init(cpufreq_gov_dbs_init);
 #endif
 module_exit(cpufreq_gov_dbs_exit);
+
