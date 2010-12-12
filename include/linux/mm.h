@@ -283,6 +283,20 @@ static inline int is_vmalloc_addr(const void *x)
 	return 0;
 #endif
 }
+static inline int is_vmalloc_or_module_addr(const void *x)
+{
+  /*
+   * ARM, x86-64 and sparc64 put modules in a special place,
+   * and fall back on vmalloc() if that fails. Others
+   * just put it in the vmalloc space.
+   */
+#if defined(CONFIG_MODULES) && defined(MODULES_VADDR)
+  unsigned long addr = (unsigned long)x;
+  if (addr >= MODULES_VADDR && addr < MODULES_END)
+    return 1;
+#endif
+  return is_vmalloc_addr(x);
+}
 
 static inline struct page *compound_head(struct page *page)
 {
