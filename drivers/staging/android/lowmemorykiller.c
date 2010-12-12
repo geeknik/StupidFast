@@ -90,7 +90,7 @@ static int lowmem_shrink(int nr_to_scan, gfp_t gfp_mask)
 	 *  too big, so it's better to use sum of active & inactive file instead of nr_free_pages.
 	 */
 	//	int other_file = global_page_state(NR_FILE_PAGES);
-	int other_file = global_page_state(NR_INACTIVE_FILE) + global_page_state(NR_ACTIVE_FILE);
+	int other_file = global_page_state(NR_ACTIVE_FILE) + global_page_state(NR_INACTIVE_FILE);
 
 	/*
 	* If we already have a death outstanding, then
