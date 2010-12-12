@@ -347,19 +347,13 @@ LINUXINCLUDE    := -Iinclude \
 KBUILD_CPPFLAGS := -D__KERNEL__ -Dlinux
 
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
-		   -fno-strict-aliasing -fno-common \
-		   -Werror-implicit-function-declaration \
-		   -fno-delete-null-pointer-checks \
-		   -march=armv7-a -mtune=cortex-a8 \
-                   -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=hard \
-		   -fno-gcse -marm -mvectorize-with-neon-quad \
-		   -mthumb -fomit-frame-pointer -ftree-vectorize \
-		   -funroll-loops -ffast-math -fsingle-precision-constant \
-		   --param l2-cache-size=512 \
-		   --param l1-cache-size=64 \
-		   --param simultaneous-prefetches=6 \
-		   --param prefetch-latency=400 \
-		   --param l1-cache-line-size=64
+		   -fno-strict-aliasing -fno-common -marm -mthumb-interwork \
+		   -Werror-implicit-function-declaration -mcpu=cortex-a8 \
+		   -fno-delete-null-pointer-checks -fsched-spec-load \
+		   -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -fgcse-lm \
+		   -fgcse-sm -fomit-frame-pointer -funroll-loops \
+		   -ffinite-math-only -fsingle-precision-constant \
+		   -fno-math-errno -fno-signed-zeros -fno-tree-vectorize
 
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 
