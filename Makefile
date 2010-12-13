@@ -351,7 +351,7 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Werror-implicit-function-declaration -mfpu=neon \
 		   -mthumb -mthumb-interwork -fno-delete-null-pointer-checks \
 		   -mfloat-abi=softfp -fno-gcse -ftree-vectorize \
-		   -fomit-frame-pointer -funroll-loops -ffast-math \ 
+		   -fomit-frame-pointer -funroll-loops -ffast-math \
 		   -fsingle-precision-constant
 
 KBUILD_AFLAGS   := -D__ASSEMBLY__
