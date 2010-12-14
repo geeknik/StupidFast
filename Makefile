@@ -1,7 +1,7 @@
 VERSION = 2
 PATCHLEVEL = 6
 SUBLEVEL = 29
-EXTRAVERSION =
+EXTRAVERSION = 
 NAME = Temporary Tasmanian Devil
 
 # *DOCUMENTATION*
@@ -348,11 +348,11 @@ KBUILD_CPPFLAGS := -D__KERNEL__ -Dlinux
 
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common -fomit-frame-pointer \
-		   -Werror-implicit-function-declaration -mfpu=neon \
-		   -mtune=cortex-a8 -mthumb -fno-delete-null-pointer-checks \
-		   -mfloat-abi=softfp -fno-gcse -ftree-vectorize \
-		   -fomit-frame-pointer -funroll-loops -ffast-math \
-		   -fsingle-precision-constant
+		   -Werror-implicit-function-declaration -march=armv7-a -mthumb \
+		   -mfpu=neon -mfp=neon -mtune=cortex-a8 -mthumb-interwork \
+		   -fno-delete-null-pointer-checks -mfloat-abi=softfp \
+		   -fno-gcse -ftree-vectorize -fomit-frame-pointer \
+		   -funroll-loops -ffast-math -fsingle-precision-constant
 
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 
