@@ -404,6 +404,7 @@ static int bad_syscall(int n, struct pt_regs *regs)
 static inline void
 do_cache_op(unsigned long start, unsigned long end, int flags)
 {
+	struct mm_struct *mm = current->active_mm;
 	struct vm_area_struct *vma;
 
 	if (end < start || flags)
