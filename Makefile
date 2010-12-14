@@ -349,7 +349,7 @@ KBUILD_CPPFLAGS := -D__KERNEL__ -Dlinux
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common -fomit-frame-pointer \
 		   -Werror-implicit-function-declaration -mfpu=neon \
-		   -mthumb -mthumb-interwork -fno-delete-null-pointer-checks \
+		   -mtune=cortex-a8 -mthumb -fno-delete-null-pointer-checks \
 		   -mfloat-abi=softfp -fno-gcse -ftree-vectorize \
 		   -fomit-frame-pointer -funroll-loops -ffast-math \
 		   -fsingle-precision-constant
