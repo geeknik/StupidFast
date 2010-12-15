@@ -1151,8 +1151,6 @@ static int get_info(struct net *net, void __user *user, int *len, int compat)
 		struct ip6t_getinfo info;
 		const struct xt_table_info *private = t->private;
 #ifdef CONFIG_COMPAT
-	struct xt_table_info tmp;
-
 		if (compat) {
 			ret = compat_table_info(private, &tmp);
 			xt_compat_flush_offsets(AF_INET6);
