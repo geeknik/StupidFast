@@ -347,12 +347,12 @@ LINUXINCLUDE    := -Iinclude \
 KBUILD_CPPFLAGS := -D__KERNEL__ -Dlinux
 
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
-		   -fno-strict-aliasing -fno-common -fomit-frame-pointer \
-		   -Werror-implicit-function-declaration -march=armv7-a -mthumb \
-		   -mfpu=neon -mfp=neon -mtune=cortex-a8 -mthumb-interwork \
-		   -fno-delete-null-pointer-checks -mfloat-abi=softfp \
+		   -fno-strict-aliasing -fno-common -marm -Uarm \
+		   -Werror-implicit-function-declaration -fno-delete-null-pointer-checks \
+		   -mno-thumb-interwork -march=armv7a -mtune=cortex-a8 \
+		   -mfpu=neon -mfp=3 -mthumb-interwork -mfloat-abi=softfp \
 		   -fno-gcse -ftree-vectorize -fomit-frame-pointer \
-		   -funroll-loops -ffast-math -fsingle-precision-constant
+	           -funroll-loops -ffast-math -fsingle-precision-constant
 
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 
