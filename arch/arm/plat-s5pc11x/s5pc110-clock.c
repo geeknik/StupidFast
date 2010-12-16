@@ -57,7 +57,7 @@ extern unsigned int s5pc11x_cpufreq_index;
 /*APLL_FOUT, MPLL_FOUT, ARMCLK, HCLK_DSYS*/
 static const u32 s5p_sysout_clk_tab_1GHZ[][4] = {
 	// APLL:1000,ARMCLK:1000,HCLK_MSYS:200,MPLL:667,HCLK_DSYS:166,HCLK_PSYS:133,PCLK_MSYS:100,PCLK_DSYS:83,PCLK_PSYS:66
-	{1000* MHZ, 667 *MHZ, 1000 *MHZ, 166 *MHZ},
+	{1200* MHZ, 667 *MHZ, 1000 *MHZ, 166 *MHZ},
 	// APLL:800,ARMCLK:800,HCLK_MSYS:200,MPLL:667,HCLK_DSYS:166,HCLK_PSYS:133,PCLK_MSYS:100,PCLK_DSYS:83,PCLK_PSYS:66
 	{800* MHZ, 667 *MHZ, 800 *MHZ, 166 *MHZ},
 	// APLL:800,ARMCLK:400,HCLK_MSYS:200,MPLL:667,HCLK_DSYS:166,HCLK_PSYS:133,PCLK_MSYS:100,PCLK_DSYS:83,PCLK_PSYS:66
@@ -88,7 +88,7 @@ static const u32 s5p_sys_clk_div0_tab_1GHZ[][DIV_TAB_MAX_FIELD] = {
 /*pms value table*/
 /*APLL(m, p, s), MPLL(m, p, s)*/
 static const u32 s5p_sys_clk_mps_tab_1GHZ[][6] = {
-        {288, 6, 1, 667, 12, 1},
+        {300, 6, 1, 667, 12, 1},
         {200, 6, 1, 667, 12, 1},
         {200, 6, 1, 667, 12, 1},
         {200, 6, 1, 667, 12, 1},
