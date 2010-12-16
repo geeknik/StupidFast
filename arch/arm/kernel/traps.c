@@ -404,7 +404,6 @@ static int bad_syscall(int n, struct pt_regs *regs)
 static inline void
 do_cache_op(unsigned long start, unsigned long end, int flags)
 {
-	struct mm_struct *mm = current->active_mm;
 	struct vm_area_struct *vma;
 
 	if (end < start || flags)
@@ -417,9 +416,9 @@ do_cache_op(unsigned long start, unsigned long end, int flags)
 		if (end > vma->vm_end)
 			end = vma->vm_end;
 
-	up_read(&mm->mmap_sem);
-	flush_cache_user_range(start, end);
-	return;
+		up_read(&mm->mmap_sem);
+		flush_cache_user_range(start, end);
+		return;
 	}
 }
 
@@ -735,3 +734,4 @@ void __init early_trap_init(void)
 	flush_icache_range(vectors, vectors + PAGE_SIZE);
 	modify_domain(DOMAIN_USER, DOMAIN_CLIENT);
 }
+
