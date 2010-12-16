@@ -127,19 +127,19 @@ static struct cpufreq_frequency_table *s5pc110_freq_table[] = {
 
 static unsigned int s5pc110_thres_table_1GHZ[][2] = {
 //	down threshold, up threshold
-        {40, 70},
-        {30, 90},
-        {30, 70},
-        {30, 70},
-        {30, 70},
+        {45, 90},
+        {45, 90},
+        {40, 80},
+        {40, 85},
+        {45, 85},
 };
 
 static unsigned int s5pc110_thres_table_800MHZ[][2] = {
 //	down threshold, up threshold	
-        {30, 70},
-        {30, 70},
-        {30, 70},
-        {30, 70},
+        {40, 80},
+        {40, 80},
+        {40, 70},
+        {40, 80},
 };
 
 static unsigned int  (*s5pc110_thres_table[2])[2] = {
