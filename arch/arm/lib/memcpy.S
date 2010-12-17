@@ -14,21 +14,21 @@
 #include <asm/assembler.h>
 
 #if __ARM_ARCH__ == 7 || defined(__ARM_NEON__)
-	
+
 			.text
 			.fpu neon
-			
+
 			.global memcpy
 			.type memcpy, %function
 			.align 4
-			
+
 #define NEON_MAX_PREFETCH_DISTANCE 320
-			
+
 memcpy:
 			mov ip, r0
 			cmp r2, #16
 			blt 4f @ Have less than 16 bytes to copy
-	
+
 			@ First ensure 16 byte alignment for the destination buffer
 			tst r0, #0xF
 			beq 2f
@@ -42,7 +42,7 @@ memcpy:
 			ldrneb r3, [r1], #1
 			strneb r3, [ip], #1
 			subne r2, r2, #2
-			
+
 			tst ip, #4
 			beq 1f
 			vld4.8 {d0[0], d1[0], d2[0], d3[0]}, [r1]!
@@ -58,7 +58,7 @@ memcpy:
 			subs r2, r2, #32
 			blt 3f
 			mov r3, #32
-			
+
 			@ Main copy loop, 32 bytes are processed per iteration.
 			@ ARM instructions are used for doing fine-grained prefetch,
 			@ increasing prefetch distance progressively up to
@@ -91,7 +91,42 @@ memcpy:
 			@ pipeline will be (mostly) flushed by the time when the
 			@ control returns to the caller, making the use of NEON mostly
 			@ transparent (and avoiding hazards in the caller code)
-			
+
+#ifdef ENABLE_UNALIGNED_MEM_ACCESSES
+		movs	r3, r2, lsl #29
+		ldrcs	r3, [r1], #4
+		strcs	r3, [ip], #4
+		ldrcs	r3, [r1], #4
+		strcs	r3, [ip], #4
+		ldrmi	r3, [r1], #4
+		strmi	r3, [ip], #4
+		movs	r2, r2, lsl #31
+		ldrcsh	r3, [r1], #2
+		strcsh	r3, [ip], #2
+		ldrmib	r3, [r1], #1
+		strmib	r3, [ip], #1
+#else
+		movs	r3, r2, lsl #29
+		bcc	1f
+	.rept	8
+		ldrcsb	r3, [r1], #1
+		strcsb	r3, [ip], #1
+	.endr
+1:
+		bpl	1f
+	.rept	4
+		ldrmib	r3, [r1], #1
+		strmib	r3, [ip], #1
+	.endr
+1:
+		movs	r2, r2, lsl #31
+		ldrcsb	r3, [r1], #1
+		strcsb	r3, [ip], #1
+		ldrcsb	r3, [r1], #1
+		strcsb	r3, [ip], #1
+		ldrmib	r3, [r1], #1
+		strmib	r3, [ip], #1
+#endif
 			movs r3, r2, lsl #29
 			bcc 1f
 			.rept 8
@@ -113,7 +148,7 @@ memcpy:
 			ldrmib r3, [r1], #1
 			strmib r3, [ip], #1
 			bx lr
-			
+
 #else /* __ARM_ARCH__ < 7 */
 
 	.macro ldr1w ptr reg abort
@@ -154,7 +189,7 @@ memcpy:
 
 	.text
 
-#define CACHE_LINE_SIZE 64
+#define CACHE_LINE_SIZE 32
 #define PREFETCH_DISTANCE (CACHE_LINE_SIZE*4)
 
 /* Prototype: void *memcpy(void *dest, const void *src, size_t n); */
