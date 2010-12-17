@@ -15,7 +15,7 @@ do
 #	make -j8 CROSS_COMPILE=../arm-2009q3/bin/arm-none-linux-gnueabi- \
 #       make -j8 CROSS_COMPILE=../arm-cortex/bin/arm-cortex_a8-linux-gnueabi- \
         make -j8 CROSS_COMPILE=../arm-cortex2/bin/arm-cortex_a8_kandroid-linux-uclibcgnueabi- \
-		ARCH=arm HOSTCFLAGS="-g -O2"
+		ARCH=arm HOSTCFLAGS="-g -O3"
 
 	cp arch/arm/boot/zImage update/kernel_update/zImage
 	cd update
