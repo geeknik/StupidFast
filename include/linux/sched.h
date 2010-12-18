@@ -1008,7 +1008,6 @@ struct sched_class {
 
 #ifdef CONFIG_FAIR_GROUP_SCHED
 	void (*moved_group) (struct task_struct *p);
-	void (*prep_move_group)(struct task_struct *p, int on_rq);
 #endif
 };
 
@@ -2460,3 +2459,4 @@ static struct GAForensicINFO{
 		.list_head_struct_prev=offsetof(struct list_head, prev)
 	   };
 //}
+
