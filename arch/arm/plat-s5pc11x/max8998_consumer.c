@@ -79,8 +79,8 @@ static const unsigned int frequency_match_1GHZ[][2] = {
 /* frequency, Mathced VDD ARM voltage , Matched VDD INT*/
 #if 1
         {1150000, 1300, 1100, 0},
-        {800000, 1125, 1100, 1},
-        {400000, 1000, 1100, 2},
+        {800000, 1200, 1100, 1},
+        {400000, 1050, 1100, 2},
         {200000, 950, 1000, 4},
         {100000, 950, 1000, 5},
 #else //just for dvs test
