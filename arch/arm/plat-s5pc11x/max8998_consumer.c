@@ -78,11 +78,11 @@ enum PMIC_VOLTAGE {
 static const unsigned int frequency_match_1GHZ[][2] = {
 /* frequency, Mathced VDD ARM voltage , Matched VDD INT*/
 #if 1
-        {1150000, 1300, 1100, 0},
-        {800000, 1200, 1100, 1},
-        {400000, 1050, 1100, 2},
-        {200000, 950, 1000, 4},
-        {100000, 950, 1000, 5},
+        {1150000, 1285, 1100, 0},
+        {800000, 1125, 1100, 1},
+        {400000, 1000, 1100, 2},
+        {200000, 900, 1000, 4},
+        {100000, 900, 1000, 5},
 #else //just for dvs test
         {1000000, 1250, 1100, 0},
         {800000, 1250, 1100, 1},
@@ -139,7 +139,7 @@ static const unsigned int dvs_volt_table_1GHZ[][3] = {
  //266       {L3, DVSARM3, DVSINT1},
         {L3, DVSARM4, DVSINT1},
         {L4, DVSARM4, DVSINT2},
-        {L5, DVSARM4, DVSINT2},
+//        {L5, DVSARM4, DVSINT2},
 //        {L6, DVSARM4, DVSINT2},
 };
 
@@ -174,7 +174,7 @@ static int set_max8998(unsigned int pwr, enum perf_level p_lv)
 			return ret;
 
 		pmic_val = voltage * 1000;
-
+		
 		DBG("regulator_set_voltage =%d\n",voltage);
 		/*set Arm voltage*/
 		ret = regulator_set_voltage(Reg_Arm,pmic_val,pmic_val);
@@ -190,8 +190,8 @@ static int set_max8998(unsigned int pwr, enum perf_level p_lv)
 		else
 			udelay((s_arm_voltage - voltage)/RAMP_RATE);
 
-		s_arm_voltage = voltage;
-
+		s_arm_voltage = voltage;	
+		
 	} else if(pwr == PMIC_INT) {
 		voltage = frequency_match_tab[p_lv][pwr + 1];
 		if(voltage == s_int_voltage)
@@ -512,3 +512,4 @@ MODULE_AUTHOR("Amit Daniel");
 MODULE_DESCRIPTION("MAX 8998 consumer driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:max8998-consumer");
+

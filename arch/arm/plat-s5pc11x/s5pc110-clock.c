@@ -78,7 +78,7 @@ static const u32 s5p_sysout_clk_tab_1GHZ[][4] = {
 /*div0 ratio table*/
 /*apll, a2m, HCLK_MSYS, PCLK_MSYS, HCLK_DSYS, PCLK_DSYS, HCLK_PSYS, PCLK_PSYS, MFC_DIV, G3D_DIV, MSYS source(2D, 3D, MFC)(0->apll,1->mpll), DMC0 div*/
 static const u32 s5p_sys_clk_div0_tab_1GHZ[][DIV_TAB_MAX_FIELD] = {
-        {0, 4, 4, 1, 3, 1, 4, 1, 3, 3, 0, 3},
+        {0, 5, 5, 1, 3, 1, 4, 1, 3, 3, 0, 3},
         {0, 3, 3, 1, 3, 1, 4, 1, 3, 3, 0, 3},
         {1, 3, 1, 1, 3, 1, 4, 1, 3, 3, 0, 3},
         {3, 3, 0, 1, 3, 1, 4, 1, 3, 3, 0, 3},
@@ -166,7 +166,7 @@ struct clk clk_ext_xtal_mux = {
 
 #define clk_fout_mpll	clk_mpll
 
-struct clk_sources {
+truct clk_sources {
 	unsigned int	nr_sources;
 	struct clk	**sources;
 };
