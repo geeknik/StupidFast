@@ -329,11 +329,11 @@ CHECK		= sparse
 
 CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
-MODFLAGS	= -DMODULE
+MODFLAGS	= -DMODULE -O3 -marm -mfpu=neon -mtune=cortex-a8
 CFLAGS_MODULE   = $(MODFLAGS)
 AFLAGS_MODULE   = $(MODFLAGS)
 LDFLAGS_MODULE  =
-CFLAGS_KERNEL	=
+CFLAGS_KERNEL	= -O3 -marm -mfpu=neon -mtune=cortex-a8
 AFLAGS_KERNEL	=
 
 
@@ -350,12 +350,12 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common -marm -Uarm \
 		   -Werror-implicit-function-declaration -fno-delete-null-pointer-checks \
 		   -mno-thumb-interwork -march=armv7a -mtune=cortex-a8 \
-		   -mfpu=neon -mfp=3 -mthumb-interwork -mfloat-abi=softfp \
-		   -fno-gcse -ftree-vectorize -fomit-frame-pointer \
+		   -mfpu=neon -mfp=3  -mfloat-abi=softfp -fno-gcse \
+		   -ftree-vectorize -fomit-frame-pointer \
 	           -funroll-loops -ffast-math -fsingle-precision-constant
 		   --param l2-cache-size=256 \
 		   --param l1-cache-size=32 \
-		   --param simultaneous-prefetches=6 \
+		   --param simultaneous-prefetches=8 \
 		   --param prefetch-latency=400 \
 		   --param l1-cache-line-size=32
 
