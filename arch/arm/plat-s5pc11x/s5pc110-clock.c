@@ -166,7 +166,7 @@ struct clk clk_ext_xtal_mux = {
 
 #define clk_fout_mpll	clk_mpll
 
-truct clk_sources {
+struct clk_sources {
 	unsigned int	nr_sources;
 	struct clk	**sources;
 };
