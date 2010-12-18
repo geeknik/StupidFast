@@ -50,8 +50,8 @@ unsigned int MAXFREQ_LEVEL_SUPPORTED = 4;
 unsigned int S5PC11X_MAXFREQLEVEL = 4;
 unsigned int S5PC11X_FREQ_TAB;
 //static spinlock_t g_cpufreq_lock = SPIN_LOCK_UNLOCKED;
-static unsigned int s5pc11x_cpufreq_level = 4;
-unsigned int s5pc11x_cpufreq_index = 1;
+static unsigned int s5pc11x_cpufreq_level = 3;
+unsigned int s5pc11x_cpufreq_index = 0;
 
 static char cpufreq_governor_name[CPUFREQ_NAME_LEN] = "conservative";// default governor
 static char userspace_governor[CPUFREQ_NAME_LEN] = "userspace";
@@ -93,8 +93,8 @@ static unsigned char transition_state_1GHZ[][2] = {
         {1, 0},
         {2, 0},
         {3, 1},
-        {4, 1},
-        {5, 2},
+        {4, 2},
+        {5, 3},
 };
 
 /* frequency */
@@ -127,19 +127,19 @@ static struct cpufreq_frequency_table *s5pc110_freq_table[] = {
 
 static unsigned int s5pc110_thres_table_1GHZ[][2] = {
 //	down threshold, up threshold
-        {60, 70},
-        {55, 90},
-        {50, 85},
-        {50, 85},
-        {35, 85},
+        {45, 90},
+        {45, 90},
+        {40, 80},
+        {40, 85},
+        {45, 85},
 };
 
 static unsigned int s5pc110_thres_table_800MHZ[][2] = {
 //	down threshold, up threshold	
-        {30, 70},
-        {30, 70},
-        {30, 70},
-        {30, 70},
+        {40, 80},
+        {40, 80},
+        {40, 70},
+        {40, 80},
 };
 
 static unsigned int  (*s5pc110_thres_table[2])[2] = {
@@ -798,3 +798,4 @@ static int __init s5pc110_cpufreq_init(void)
 }
 
 arch_initcall(s5pc110_cpufreq_init);
+

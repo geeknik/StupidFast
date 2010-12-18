@@ -78,7 +78,7 @@ enum PMIC_VOLTAGE {
 static const unsigned int frequency_match_1GHZ[][2] = {
 /* frequency, Mathced VDD ARM voltage , Matched VDD INT*/
 #if 1
-        {1150000, 1250, 1100, 0},
+        {1150000, 1285, 1100, 0},
         {800000, 1125, 1100, 1},
         {400000, 1000, 1100, 2},
         {200000, 900, 1000, 4},
@@ -105,7 +105,7 @@ const unsigned int (*frequency_match[2])[2] = {
 };
 
 /*  voltage table */
-static const unsigned int voltage_table[17] = {
+static const unsigned int voltage_table[16] = {
 	750, 800, 850, 900, 950, 1000, 1050,
 	1100, 1150, 1200, 1250, 1300, 1350,
 	1400, 1450, 1500
@@ -139,7 +139,7 @@ static const unsigned int dvs_volt_table_1GHZ[][3] = {
  //266       {L3, DVSARM3, DVSINT1},
         {L3, DVSARM4, DVSINT1},
         {L4, DVSARM4, DVSINT2},
-//        {L5, DVSARM4, DVSINT2},
+/        {L5, DVSARM4, DVSINT2},
 //        {L6, DVSARM4, DVSINT2},
 };
 
@@ -512,3 +512,4 @@ MODULE_AUTHOR("Amit Daniel");
 MODULE_DESCRIPTION("MAX 8998 consumer driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:max8998-consumer");
+
