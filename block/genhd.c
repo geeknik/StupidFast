@@ -150,7 +150,6 @@ struct hd_struct *disk_part_iter_next(struct disk_part_iter *piter)
 		part = rcu_dereference(ptbl->part[piter->idx]);
 		if (!part)
 			continue;
-	if (!part->nr_sects &&
 	if (!(piter->flags & DISK_PITER_INCL_EMPTY) && !part->nr_sects)
 		continue;
 
