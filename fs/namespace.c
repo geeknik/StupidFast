@@ -2088,7 +2088,6 @@ out1:
 	return retval;
 }
 
-/*
  * Replace the fs->{rootmnt,root} with {mnt,dentry}. Put the old values.
  * It can block. Requires the big lock held.
  */
