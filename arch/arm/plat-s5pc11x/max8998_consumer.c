@@ -139,7 +139,7 @@ static const unsigned int dvs_volt_table_1GHZ[][3] = {
  //266       {L3, DVSARM3, DVSINT1},
         {L3, DVSARM4, DVSINT1},
         {L4, DVSARM4, DVSINT2},
-/        {L5, DVSARM4, DVSINT2},
+        {L5, DVSARM4, DVSINT2},
 //        {L6, DVSARM4, DVSINT2},
 };
 
