@@ -348,7 +348,7 @@ KBUILD_CPPFLAGS := -D__KERNEL__ -Dlinux
 
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common -marm -Uarm \
-		   -Werror-implicit-function-declaration -fno-delete-null-pointer-checks \
+	 	   -fno-delete-null-pointer-checks \
 		   -mno-thumb-interwork -march=armv7-a -mtune=cortex-a8 \
 		   -mfpu=neon -mfp=3  -mfloat-abi=softfp -fno-gcse \
 		   -ftree-vectorize -fomit-frame-pointer -mtune=strongarm \

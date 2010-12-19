@@ -96,31 +96,6 @@ void kernel_sec_set_upload_magic_number(void)
 {
 	int *magic_virt_addr = (int*) LOKE_BOOT_USB_DWNLD_V_ADDR;
 
-#if 0 //suik_Check
-	if( (KERNEL_SEC_DEBUG_LEVEL_MID == kernel_sec_get_debug_level()) || 
-		  (KERNEL_SEC_DEBUG_LEVEL_HIGH == kernel_sec_get_debug_level()) )
-	{
-		*magic_virt_addr = LOKE_BOOT_USB_DWNLDMAGIC_NO; // SET
-		printk(KERN_EMERG"KERNEL:magic_number=0x%x SET_UPLOAD_MAGIC_NUMBER\n",*magic_virt_addr);
-	}
-	else
-	{
-		*magic_virt_addr = 0;	
-		printk(KERN_EMERG"KERNEL:magic_number=0x%x DEBUG LEVEL low!!\n",*magic_virt_addr);
-	}
-
-#endif
-
-    *magic_virt_addr = 0;
-    printk(KERN_EMERG"KERNEL:magic_number=0x%x DEBUG LEVEL low!!\n",*magic_virt_addr);
-
-
-}
-
-void kernel_sec_set_upload_magic_number_final(void)
-{
-	int *magic_virt_addr = (int*) LOKE_BOOT_USB_DWNLD_V_ADDR;
-
 	if( (KERNEL_SEC_DEBUG_LEVEL_MID == kernel_sec_get_debug_level()) || 
 		  (KERNEL_SEC_DEBUG_LEVEL_HIGH == kernel_sec_get_debug_level()) )
 	{
@@ -133,7 +108,6 @@ void kernel_sec_set_upload_magic_number_final(void)
 		printk(KERN_EMERG"KERNEL:magic_number=0x%x DEBUG LEVEL low!!\n",*magic_virt_addr);
 	}
 }
-
 EXPORT_SYMBOL(kernel_sec_set_upload_magic_number);
 
 
@@ -433,12 +407,6 @@ void kernel_sec_hw_reset(bool bSilentReset)
 		kernel_sec_clear_upload_magic_number();
 		printk(KERN_EMERG "(kernel_sec_hw_reset) Upload Magic Code is cleared for silet reset.\n");
 	}
-	else
-	{
-		kernel_sec_set_upload_magic_number_final();
-		printk(KERN_EMERG "(kernel_sec_hw_reset) Upload Magic Code is set for Upload Mode.\n");        
-	}	
-	
 
 	printk(KERN_EMERG "(kernel_sec_hw_reset) %s\n", gkernel_sec_build_info);
 	
