@@ -417,6 +417,7 @@ EXPORT_SYMBOL(disallow_signal);
 void daemonize(const char *name, ...)
 {
 	va_list args;
+	struct fs_struct *fs;
 	sigset_t blocked;
 
 	va_start(args, name);
@@ -449,7 +450,11 @@ void daemonize(const char *name, ...)
 
 	/* Become as one with the init task */
 
-	daemonize_fs_struct();
+	exit_fs(current);	/* current->fs->count--; */
+	fs = init_task.fs;
+	current->fs = fs;
+	atomic_inc(&fs->count);
+
 	exit_files(current);
 	current->files = init_task.files;
 	atomic_inc(&current->files->count);
@@ -551,6 +556,30 @@ void exit_files(struct task_struct *tsk)
 		put_files_struct(files);
 	}
 }
+
+void put_fs_struct(struct fs_struct *fs)
+{
+	/* No need to hold fs->lock if we are killing it */
+	if (atomic_dec_and_test(&fs->count)) {
+		path_put(&fs->root);
+		path_put(&fs->pwd);
+		kmem_cache_free(fs_cachep, fs);
+	}
+}
+
+void exit_fs(struct task_struct *tsk)
+{
+	struct fs_struct * fs = tsk->fs;
+
+	if (fs) {
+		task_lock(tsk);
+		tsk->fs = NULL;
+		task_unlock(tsk);
+		put_fs_struct(fs);
+	}
+}
+
+EXPORT_SYMBOL_GPL(exit_fs);
 
 #ifdef CONFIG_MM_OWNER
 /*
@@ -695,6 +724,133 @@ static void exit_mm(struct task_struct * tsk)
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * Return nonzero if @parent's children should reap themselves.
+ *
+ * Called with write_lock_irq(&tasklist_lock) held.
+ */
+static int ignoring_children(struct task_struct *parent)
+{
+	int ret;
+	struct sighand_struct *psig = parent->sighand;
+	unsigned long flags;
+	spin_lock_irqsave(&psig->siglock, flags);
+	ret = (psig->action[SIGCHLD-1].sa.sa_handler == SIG_IGN ||
+	       (psig->action[SIGCHLD-1].sa.sa_flags & SA_NOCLDWAIT));
+	spin_unlock_irqrestore(&psig->siglock, flags);
+	return ret;
+}
+
+/*
+ * Detach all tasks we were using ptrace on.
+ * Any that need to be release_task'd are put on the @dead list.
+ *
+ * Called with write_lock(&tasklist_lock) held.
+ */
+static void ptrace_exit(struct task_struct *parent, struct list_head *dead)
+{
+	struct task_struct *p, *n;
+	int ign = -1;
+
+	list_for_each_entry_safe(p, n, &parent->ptraced, ptrace_entry) {
+		__ptrace_unlink(p);
+
+		if (p->exit_state != EXIT_ZOMBIE)
+			continue;
+
+		/*
+		 * If it's a zombie, our attachedness prevented normal
+		 * parent notification or self-reaping.  Do notification
+		 * now if it would have happened earlier.  If it should
+		 * reap itself, add it to the @dead list.  We can't call
+		 * release_task() here because we already hold tasklist_lock.
+		 *
+		 * If it's our own child, there is no notification to do.
+		 * But if our normal children self-reap, then this child
+		 * was prevented by ptrace and we must reap it now.
+		 */
+		if (!task_detached(p) && thread_group_empty(p)) {
+			if (!same_thread_group(p->real_parent, parent))
+				do_notify_parent(p, p->exit_signal);
+			else {
+				if (ign < 0)
+					ign = ignoring_children(parent);
+				if (ign)
+					p->exit_signal = -1;
+			}
+		}
+
+		if (task_detached(p)) {
+			/*
+			 * Mark it as in the process of being reaped.
+			 */
+			p->exit_state = EXIT_DEAD;
+			list_add(&p->ptrace_entry, dead);
+		}
+	}
+}
+
+/*
+ * Finish up exit-time ptrace cleanup.
+ *
+ * Called without locks.
+ */
+static void ptrace_exit_finish(struct task_struct *parent,
+			       struct list_head *dead)
+{
+	struct task_struct *p, *n;
+
+	BUG_ON(!list_empty(&parent->ptraced));
+
+	list_for_each_entry_safe(p, n, dead, ptrace_entry) {
+		list_del_init(&p->ptrace_entry);
+		release_task(p);
+	}
+}
+
+/* Returns nonzero if the child should be released. */
+static int reparent_thread(struct task_struct *p, struct task_struct *father)
+{
+	int dead;
+
+	if (p->pdeath_signal)
+		/* We already hold the tasklist_lock here.  */
+		group_send_sig_info(p->pdeath_signal, SEND_SIG_NOINFO, p);
+
+	list_move_tail(&p->sibling, &p->real_parent->children);
+
+	if (task_detached(p))
+		return 0;
+	/* If this is a threaded reparent there is no need to
+	 * notify anyone anything has happened.
+	 */
+	if (same_thread_group(p->real_parent, father))
+		return 0;
+
+	/* We don't want people slaying init.  */
+	p->exit_signal = SIGCHLD;
+
+	/* If we'd notified the old parent about this child's death,
+	 * also notify the new parent.
+	 */
+	dead = 0;
+	if (!p->ptrace &&
+	    p->exit_state == EXIT_ZOMBIE && thread_group_empty(p)) {
+		do_notify_parent(p, p->exit_signal);
+		if (task_detached(p)) {
+			p->exit_state = EXIT_DEAD;
+			dead = 1;
+		}
+	}
+
+	kill_orphaned_pgrp(p, father);
+
+	return dead;
+}
+
+/*
+>>>>>>> parent of 7f68682... misc kernel patches
  * When we die, we re-parent all our children.
  * Try to give them to another thread in our thread
  * group, and if no such member exists, give it to
@@ -843,7 +999,12 @@ static void exit_notify(struct task_struct *tsk, int group_dead)
 	 */
 	if (tsk->exit_signal != SIGCHLD && !task_detached(tsk) &&
 	    (tsk->parent_exec_id != tsk->real_parent->self_exec_id ||
+<<<<<<< HEAD
 	     tsk->self_exec_id != tsk->parent_exec_id))
+=======
+	     tsk->self_exec_id != tsk->parent_exec_id) &&
+	    !capable(CAP_KILL))
+>>>>>>> parent of 7f68682... misc kernel patches
 		tsk->exit_signal = SIGCHLD;
 
 	signal = tracehook_notify_death(tsk, &cookie, group_dead);
