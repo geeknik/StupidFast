@@ -725,7 +725,10 @@ static void exit_mm(struct task_struct * tsk)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 7f68682... misc kernel patches
  * Return nonzero if @parent's children should reap themselves.
  *
  * Called with write_lock_irq(&tasklist_lock) held.
@@ -1000,7 +1003,12 @@ static void exit_notify(struct task_struct *tsk, int group_dead)
 	if (tsk->exit_signal != SIGCHLD && !task_detached(tsk) &&
 	    (tsk->parent_exec_id != tsk->real_parent->self_exec_id ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 	     tsk->self_exec_id != tsk->parent_exec_id))
+=======
+	     tsk->self_exec_id != tsk->parent_exec_id) &&
+	    !capable(CAP_KILL))
+>>>>>>> parent of 7f68682... misc kernel patches
 =======
 	     tsk->self_exec_id != tsk->parent_exec_id) &&
 	    !capable(CAP_KILL))
