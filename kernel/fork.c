@@ -780,6 +780,7 @@ static int copy_fs(unsigned long clone_flags, struct task_struct *tsk)
 	if (clone_flags & CLONE_FS) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* tsk->fs is already what we want */
 		spin_lock(&fs->lock);
 		if (fs->in_exec) {
@@ -788,6 +789,9 @@ static int copy_fs(unsigned long clone_flags, struct task_struct *tsk)
 		}
 		fs->users++;
 		spin_unlock(&fs->lock);
+=======
+		atomic_inc(&current->fs->count);
+>>>>>>> parent of 20d7cbf... misc kernel patches
 =======
 		atomic_inc(&current->fs->count);
 >>>>>>> parent of 20d7cbf... misc kernel patches
@@ -906,6 +910,9 @@ static void posix_cpu_timers_init_group(struct signal_struct *sig)
 	sig->cputime_expires.virt_exp = cputime_zero;
 	sig->cputime_expires.sched_exp = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 20d7cbf... misc kernel patches
+=======
 >>>>>>> parent of 20d7cbf... misc kernel patches
 =======
 >>>>>>> parent of 20d7cbf... misc kernel patches
@@ -924,9 +931,12 @@ static int copy_signal(unsigned long clone_flags, struct task_struct *tsk)
 		return 0;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	sig = kmem_cache_zalloc(signal_cachep, GFP_KERNEL);
 =======
+=======
+>>>>>>> parent of 20d7cbf... misc kernel patches
 =======
 >>>>>>> parent of 20d7cbf... misc kernel patches
 	}
@@ -936,6 +946,9 @@ static int copy_signal(unsigned long clone_flags, struct task_struct *tsk)
 		posix_cpu_timers_init_group(sig);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 20d7cbf... misc kernel patches
+=======
 >>>>>>> parent of 20d7cbf... misc kernel patches
 =======
 >>>>>>> parent of 20d7cbf... misc kernel patches
@@ -962,8 +975,11 @@ static int copy_signal(unsigned long clone_flags, struct task_struct *tsk)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	posix_cpu_timers_init_group(sig);
 =======
+=======
+>>>>>>> parent of 20d7cbf... misc kernel patches
 =======
 >>>>>>> parent of 20d7cbf... misc kernel patches
 	acct_init_pacct(&sig->pacct);
@@ -1626,6 +1642,7 @@ static int unshare_fs(unsigned long unshare_flags, struct fs_struct **new_fsp)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(unshare_flags & CLONE_FS) || !fs)
 		return 0;
 
@@ -1639,6 +1656,8 @@ static int unshare_fs(unsigned long unshare_flags, struct fs_struct **new_fsp)
 =======
 =======
 >>>>>>> parent of 20d7cbf... misc kernel patches
+=======
+>>>>>>> parent of 20d7cbf... misc kernel patches
 	if ((unshare_flags & CLONE_FS) &&
 	    (fs && atomic_read(&fs->count) > 1)) {
 		*new_fsp = __copy_fs_struct(current->fs);
@@ -1646,6 +1665,9 @@ static int unshare_fs(unsigned long unshare_flags, struct fs_struct **new_fsp)
 			return -ENOMEM;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 20d7cbf... misc kernel patches
+=======
 >>>>>>> parent of 20d7cbf... misc kernel patches
 =======
 >>>>>>> parent of 20d7cbf... misc kernel patches
@@ -1766,6 +1788,7 @@ SYSCALL_DEFINE1(unshare, unsigned long, unshare_flags)
 			fs = current->fs;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 			spin_lock(&fs->lock);
 			current->fs = new_fs;
 			if (--fs->users)
@@ -1773,6 +1796,10 @@ SYSCALL_DEFINE1(unshare, unsigned long, unshare_flags)
 			else
 				new_fs = fs;
 			spin_unlock(&fs->lock);
+=======
+			current->fs = new_fs;
+			new_fs = fs;
+>>>>>>> parent of 20d7cbf... misc kernel patches
 =======
 			current->fs = new_fs;
 			new_fs = fs;
