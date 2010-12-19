@@ -142,8 +142,6 @@ extern void kernel_sec_map_wdog_reg(void);
 extern void kernel_sec_set_cp_upload(void);
 extern void kernel_sec_set_cp_ack(void);
 extern void kernel_sec_set_upload_magic_number(void);
-extern void kernel_sec_set_upload_magic_number_final(void); //suik_Check
-
 extern void kernel_sec_set_upload_cause(kernel_sec_upload_cause_type uploadType);
 extern void kernel_sec_set_cause_strptr(unsigned char* str_ptr, int size);
 extern void kernel_sec_set_autotest(void);

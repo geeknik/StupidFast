@@ -309,98 +309,57 @@ void input_event(struct input_dev *dev,
 	unsigned long flags;
 
 /*
- *	Forced upload mode key string (tkhwang)
+ *  Forced upload mode key string (tkhwang)
  */
-	 
+     
 #ifdef CONFIG_KERNEL_DEBUG_SEC
 
-	static int first=0, second=0;
+    static int first=0, second=0;
 
-	if(strcmp(dev->name,"s3c-keypad")==0)
-	{
-		if(value)
-		{
-			if(code==KERNEL_SEC_FORCED_UPLOAD_1ST_KEY)
-			{
-				first =1;
-			}
-			if(first==1 && code==KERNEL_SEC_FORCED_UPLOAD_2ND_KEY)
-			{
+    if(strcmp(dev->name,"s3c-keypad")==0)
+    {
+        if(value)
+        {
+            if(code==KERNEL_SEC_FORCED_UPLOAD_1ST_KEY)
+            {
+                first =1;
+            }
+            if(first==1 && code==KERNEL_SEC_FORCED_UPLOAD_2ND_KEY)
+            {
 
-				printk(KERN_ERR"level %d  reg %x \n",kernel_sec_get_debug_level(), kernel_sec_viraddr_wdt_reset_reg);
-						
-				if ( (KERNEL_SEC_DEBUG_LEVEL_MID == kernel_sec_get_debug_level()) ||
-						KERNEL_SEC_DEBUG_LEVEL_HIGH == kernel_sec_get_debug_level() )
-				{
+                printk(KERN_ERR"level %d  reg %x \n",kernel_sec_get_debug_level(), kernel_sec_viraddr_wdt_reset_reg);
+               			
+                if ( (KERNEL_SEC_DEBUG_LEVEL_MID == kernel_sec_get_debug_level()) ||
+                	    KERNEL_SEC_DEBUG_LEVEL_HIGH == kernel_sec_get_debug_level() )
+                {
 
-				printk(KERN_ERR" USER Press volume key + Power key ==> Force RAM DUMP \n");
-				kernel_sec_set_upload_magic_number_final();  //suik_Check
+                printk(KERN_ERR" USER Press volume key + Power key ==> Force RAM DUMP \n");
 
 #if 0 
-					// Display the working callstack for the debugging.
-					dump_stack();
+                    // Display the working callstack for the debugging.
+                    dump_stack();
 
-					if (kernel_sec_viraddr_wdt_reset_reg)
-					{
-					   kernel_sec_set_cp_upload();
-					   kernel_sec_save_final_context(); // Save theh final context.
-					   kernel_sec_set_upload_cause(UPLOAD_CAUSE_FORCED_UPLOAD);
-					   kernel_sec_hw_reset(false);		// Reboot.
-					}
+                    if (kernel_sec_viraddr_wdt_reset_reg)
+                    {
+                       kernel_sec_set_cp_upload();
+                       kernel_sec_save_final_context(); // Save theh final context.
+                       kernel_sec_set_upload_cause(UPLOAD_CAUSE_FORCED_UPLOAD);
+                       kernel_sec_hw_reset(false);      // Reboot.
+                    }
 
 
 #endif 
-				 }				  
-			}
-
-
-		
-			 if(code==KERNEL_SEC_FORCED_UPLOAD_2ND_KEY)
-			 {
-				 second =1;
-			 }
-			 if(second==1 && code==KERNEL_SEC_FORCED_UPLOAD_1ST_KEY)
-			 {
-				 if ( (KERNEL_SEC_DEBUG_LEVEL_MID == kernel_sec_get_debug_level()) ||
-						 KERNEL_SEC_DEBUG_LEVEL_HIGH == kernel_sec_get_debug_level() )
-				 {
-
-				   printk(KERN_ERR" USER Press Power key + volume key ==> Force RAM DUMP \n");
-				   kernel_sec_set_upload_magic_number_final();	//suik_Check
-
-#if 0				 
-					 // Display the working callstack for the debugging.
-					 dump_stack();
-			
-					 if (kernel_sec_viraddr_wdt_reset_reg)
-					 {
-						kernel_sec_set_cp_upload();
-						kernel_sec_save_final_context(); // Save theh final context.
-						kernel_sec_set_upload_cause(UPLOAD_CAUSE_FORCED_UPLOAD);
-						kernel_sec_hw_reset(false); 	 // Reboot.
-					 }
-#endif					 
-				  } 			   
-			}
-
-			
-		}
-		else
-		{
-			if(code==KERNEL_SEC_FORCED_UPLOAD_1ST_KEY)
-			{
-				first = 0;
-			}
-
-
-			if(code==KERNEL_SEC_FORCED_UPLOAD_2ND_KEY)
-			{
-				second = 0;
-			}
-			
-			kernel_sec_clear_upload_magic_number(); //suik_Check
-		}
-	}
+                 }                
+           }
+        }
+        else
+        {
+            if(code==KERNEL_SEC_FORCED_UPLOAD_1ST_KEY)
+            {
+                first = 0;
+            }
+        }
+    }
 #endif // CONFIG_KERNEL_DEBUG_SEC    
 
 	if (is_event_supported(type, dev->evbit, EV_MAX)) {
@@ -411,7 +370,6 @@ void input_event(struct input_dev *dev,
 		spin_unlock_irqrestore(&dev->event_lock, flags);
 	}
 }
-
 EXPORT_SYMBOL(input_event);
 
 /**
