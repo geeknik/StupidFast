@@ -726,7 +726,10 @@ static void exit_mm(struct task_struct * tsk)
 /*
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 7f68682... misc kernel patches
 =======
 >>>>>>> parent of 7f68682... misc kernel patches
  * Return nonzero if @parent's children should reap themselves.
@@ -1004,7 +1007,12 @@ static void exit_notify(struct task_struct *tsk, int group_dead)
 	    (tsk->parent_exec_id != tsk->real_parent->self_exec_id ||
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	     tsk->self_exec_id != tsk->parent_exec_id))
+=======
+	     tsk->self_exec_id != tsk->parent_exec_id) &&
+	    !capable(CAP_KILL))
+>>>>>>> parent of 7f68682... misc kernel patches
 =======
 	     tsk->self_exec_id != tsk->parent_exec_id) &&
 	    !capable(CAP_KILL))
