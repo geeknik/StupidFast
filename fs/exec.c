@@ -1123,25 +1123,40 @@ EXPORT_SYMBOL(install_exec_creds);
  * - the caller must hold current->cred_guard_mutex to protect against
  *   PTRACE_ATTACH
  */
+<<<<<<< HEAD
 int check_unsafe_exec(struct linux_binprm *bprm)
+=======
+void check_unsafe_exec(struct linux_binprm *bprm, struct files_struct *files)
+>>>>>>> parent of 20c785b... misc kernel patches
 {
 	struct task_struct *p = current, *t;
-	unsigned n_fs;
-	int res = 0;
+	unsigned long flags;
+	unsigned n_fs, n_files, n_sighand;
 
 	bprm->unsafe = tracehook_unsafe_exec(p);
 
 	n_fs = 1;
+<<<<<<< HEAD
 	spin_lock(&p->fs->lock);
 	rcu_read_lock();
+=======
+	n_files = 1;
+	n_sighand = 1;
+	lock_task_sighand(p, &flags);
+>>>>>>> parent of 20c785b... misc kernel patches
 	for (t = next_thread(p); t != p; t = next_thread(t)) {
 		if (t->fs == p->fs)
 			n_fs++;
+		if (t->files == files)
+			n_files++;
+		n_sighand++;
 	}
-	rcu_read_unlock();
 
-	if (p->fs->users > n_fs) {
+	if (atomic_read(&p->fs->count) > n_fs ||
+	    atomic_read(&p->files->count) > n_files ||
+	    atomic_read(&p->sighand->count) > n_sighand)
 		bprm->unsafe |= LSM_UNSAFE_SHARE;
+<<<<<<< HEAD
 	} else {
 		res = -EAGAIN;
 		if (!p->fs->in_exec) {
@@ -1152,6 +1167,10 @@ int check_unsafe_exec(struct linux_binprm *bprm)
 	spin_unlock(&p->fs->lock);
 
 	return res;
+=======
+
+	unlock_task_sighand(p, &flags);
+>>>>>>> parent of 20c785b... misc kernel patches
 }
 
 /* 
@@ -1355,16 +1374,24 @@ int do_execve(const char * filename,
 	if (retval)
 		goto out_free;
 
+<<<<<<< HEAD
 	retval = check_unsafe_exec(bprm);
 	if (retval < 0)
 		goto out_free;
 	clear_in_exec = retval;
 	current->in_execve = 1;
+=======
+	retval = -ENOMEM;
+	bprm->cred = prepare_exec_creds();
+	if (!bprm->cred)
+		goto out_unlock;
+	check_unsafe_exec(bprm, displaced);
+>>>>>>> parent of 20c785b... misc kernel patches
 
 	file = open_exec(filename);
 	retval = PTR_ERR(file);
 	if (IS_ERR(file))
-		goto out_unmark;
+		goto out_unlock;
 
 	sched_exec();
 
@@ -1407,8 +1434,12 @@ int do_execve(const char * filename,
 		goto out;
 
 	/* execve succeeded */
+<<<<<<< HEAD
 	current->fs->in_exec = 0;
 	current->in_execve = 0;
+=======
+	mutex_unlock(&current->cred_exec_mutex);
+>>>>>>> parent of 20c785b... misc kernel patches
 	acct_update_integrals(current);
 	free_bprm(bprm);
 	if (displaced)
@@ -1425,10 +1456,15 @@ out_file:
 		fput(bprm->file);
 	}
 
+<<<<<<< HEAD
 out_unmark:
 	if (clear_in_exec)
 		current->fs->in_exec = 0;
 	current->in_execve = 0;
+=======
+out_unlock:
+	mutex_unlock(&current->cred_exec_mutex);
+>>>>>>> parent of 20c785b... misc kernel patches
 
 out_free:
 	free_bprm(bprm);
