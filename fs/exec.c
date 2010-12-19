@@ -204,7 +204,7 @@ static struct page *get_arg_page(struct linux_binprm *bprm, unsigned long pos,
 		rlim = current->signal->rlim;
 		if (size > rlim[RLIMIT_STACK].rlim_cur / 4) {
 			put_page(page);
-			return NULL;
+		return NULL;
 		}
 	}
 
@@ -1049,7 +1049,7 @@ EXPORT_SYMBOL(install_exec_creds);
  * - the caller must hold current->cred_exec_mutex to protect against
  *   PTRACE_ATTACH
  */
-int check_unsafe_exec(struct linux_binrpm *bprm)
+int check_unsafe_exec(struct linux_binprm *bprm)
 {
 	struct task_struct *p = current, *t;
 	unsigned n_fs;
@@ -1069,13 +1069,14 @@ int check_unsafe_exec(struct linux_binrpm *bprm)
 	if (p->fs->users > n_fs) {
 		bprm->unsafe |= LSM_UNSAFE_SHARE;
 	} else {
-	  res = -EAGAIN;
-	  if (!p->fs->in_exec) {
-	    p->fs->in_exec = 1;
-	    res = 1;
-	  }
+		res = -EAGAIN;
+		if (!p->fs->in_exec) {
+			p->fs->in_exec = 1;
+			res = 1;
+		}
 	}
 	write_unlock(&p->fs->lock);
+
 	return res;
 }
 
@@ -1272,6 +1273,7 @@ int do_execve(char * filename,
 	struct linux_binprm *bprm;
 	struct file *file;
 	struct files_struct *displaced;
+	bool clear_in_exec;
 	int retval;
 
 	retval = unshare_files(&displaced);
@@ -1361,12 +1363,12 @@ out_file:
 		fput(bprm->file);
 	}
 
-out_unlock:
-	mutex_unlock(&current->cred_exec_mutex);
-
 out_unmark:
 	if (clear_in_exec)
 		current->fs->in_exec = 0;
+
+out_unlock:
+	mutex_unlock(&current->cred_exec_mutex);
 
 out_free:
 	free_bprm(bprm);
@@ -1871,3 +1873,4 @@ fail_unlock:
 fail:
 	return;
 }
+
