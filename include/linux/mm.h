@@ -131,11 +131,11 @@ extern unsigned int kobjsize(const void *objp);
  * Used by x86 PAT to identify such PFNMAP mappings and optimize their handling.
  * Note VM_INSERTPAGE flag is overloaded here. i.e,
  * VM_INSERTPAGE && !VM_PFNMAP implies
- *     The vma has had "vm_insert_page()" done on it
+ * 	The vma has had "vm_insert_page()" done on it
  * VM_INSERTPAGE && VM_PFNMAP implies
- *     The vma is PFNMAP with full mapping at mmap time
+ * 	The vma is PFNMAP with full mapping at map time
  */
-#define VM_PFNMAP_AT_MMAP (VM_INSERTPAGE | VM_PFNMAP)
+#define VM_PFNMAP_MMAP (VM_INSERTPAGE | VM_PFNMAP)
 
 /*
  * mapping from the currently active vm_flags protection bits (the
@@ -157,7 +157,7 @@ extern pgprot_t protection_map[16];
  */
 static inline int is_linear_pfn_mapping(struct vm_area_struct *vma)
 {
-	return ((vma->vm_flags & VM_PFNMAP_AT_MMAP) == VM_PFNMAP_AT_MMAP);
+	return ((vma->vm_flags & VM_PFNMAP_MMAP) == VM_PFNMAP_AT_MMAP);
 }
 
 static inline int is_pfn_mapping(struct vm_area_struct *vma)
@@ -294,6 +294,20 @@ static inline int is_vmalloc_addr(const void *x)
 #else
 	return 0;
 #endif
+}
+static inline int is_vmalloc_or_module_addr(const void *x)
+{
+  /*
+   * ARM, x86-64 and sparc64 put modules in a special place,
+   * and fall back on vmalloc() if that fails. Others
+   * just put it in the vmalloc space.
+   */
+#if defined(CONFIG_MODULES) && defined(MODULES_VADDR)
+  unsigned long addr = (unsigned long)x;
+  if (addr >= MODULES_VADDR && addr < MODULES_END)
+    return 1;
+#endif
+  return is_vmalloc_addr(x);
 }
 
 static inline struct page *compound_head(struct page *page)
@@ -1332,4 +1346,3 @@ extern void free_locked_buffer(void *buffer, size_t size);
 extern void release_locked_buffer(void *buffer, size_t size);
 #endif /* __KERNEL__ */
 #endif /* _LINUX_MM_H */
-
