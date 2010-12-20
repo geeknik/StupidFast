@@ -78,11 +78,11 @@ enum PMIC_VOLTAGE {
 static const unsigned int frequency_match_1GHZ[][2] = {
 /* frequency, Mathced VDD ARM voltage , Matched VDD INT*/
 #if 1
-        {1150000, 1285, 1100, 0},
+        {1200000, 1300, 1100, 0},
         {800000, 1100, 1100, 1},
-        {400000, 975, 1100, 2},
-        {200000, 875, 1000, 4},
-        {100000, 875, 1000, 5},
+        {400000, 950, 1100, 2},
+        {200000, 850, 1000, 4},
+        {100000, 850, 1000, 5},
 #else //just for dvs test
         {1000000, 1250, 1100, 0},
         {800000, 1250, 1100, 1},
@@ -105,9 +105,9 @@ const unsigned int (*frequency_match[2])[2] = {
 };
 
 /*  voltage table */
-static const unsigned int voltage_table[19] = {
-	750, 800, 850, 875, 900, 950, 975, 1000, 1050,
-	1100, 1150, 1200, 1250, 1285, 1300, 1350,
+static const unsigned int voltage_table[16] = {
+	750, 800, 850, 900, 950, 1000, 1050,
+	1100, 1150, 1200, 1250, 1300, 1350,
 	1400, 1450, 1500
 };
 
@@ -174,7 +174,7 @@ static int set_max8998(unsigned int pwr, enum perf_level p_lv)
 			return ret;
 
 		pmic_val = voltage * 1000;
-		
+
 		DBG("regulator_set_voltage =%d\n",voltage);
 		/*set Arm voltage*/
 		ret = regulator_set_voltage(Reg_Arm,pmic_val,pmic_val);
@@ -190,8 +190,8 @@ static int set_max8998(unsigned int pwr, enum perf_level p_lv)
 		else
 			udelay((s_arm_voltage - voltage)/RAMP_RATE);
 
-		s_arm_voltage = voltage;	
-		
+		s_arm_voltage = voltage;
+
 	} else if(pwr == PMIC_INT) {
 		voltage = frequency_match_tab[p_lv][pwr + 1];
 		if(voltage == s_int_voltage)
