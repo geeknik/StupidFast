@@ -80,7 +80,7 @@ extern unsigned int gbTransitionLogEnable;
 
 /* frequency */
 static struct cpufreq_frequency_table s5pc110_freq_table_1GHZ[] = {
-	{L0, 1200*1000},
+	{L0, 1000*1000},
 	{L1, 800*1000},
 	{L2, 400*1000},
 	{L3, 200*1000},
@@ -189,7 +189,7 @@ void s5pc110_lock_dvfs_high_level(unsigned int nToken, unsigned int level)
 	//printk("dvfs lock with token %d\n",nToken);
 	if (!S5PC11X_FREQ_TAB) nLevel = level + 1;
         else nLevel = level;
-	
+
 	if (nToken == DVFS_LOCK_TOKEN_6 ) nLevel--; // token for launcher , this can use 1GHz
 // check lock corruption
 	if (g_dvfs_high_lock_token & (1 << nToken) ) printk ("\n\n[DVFSLOCK] lock token %d is already used!\n\n", nToken);
@@ -264,7 +264,7 @@ s5pc11x_target_frq_end:
 	index = CLIP_LEVEL(index, s5pc11x_cpufreq_level);
 	s5pc11x_cpufreq_index = index;
 	//spin_unlock_irqrestore(&g_cpufreq_lock, irqflags);
-	
+
 	freq = freq_tab[index].frequency;
 	sdvfs_unlock(&dvfs_perf_lock);
 	return freq;
@@ -275,7 +275,7 @@ int s5pc11x_target_freq_index(unsigned int freq)
 {
 	int index = 0;
 	//unsigned long irqflags;
-	
+
 	struct cpufreq_frequency_table *freq_tab = s5pc110_freq_table[S5PC11X_FREQ_TAB];
 
 	if(freq >= freq_tab[index].frequency) {
@@ -308,7 +308,7 @@ s5pc11x_target_freq_index_end:
 	index = CLIP_LEVEL(index, s5pc11x_cpufreq_level);
 	s5pc11x_cpufreq_index = index;
 	//spin_unlock_irqrestore(&g_cpufreq_lock, irqflags);
-	
+
 	return index;
 } 
 
@@ -330,9 +330,9 @@ int s5pc110_pm_target(unsigned int target_freq)
 		printk(KERN_DEBUG"%dMHz already set return \n", target_freq/1000);
 		return ret;
 	}
-	
+
         arm_clk = s5pc110_freq_table[S5PC11X_FREQ_TAB][index].frequency;
-        
+
         target_freq = arm_clk;
 
 	if(prevIndex < index) { // clock down
@@ -344,7 +344,7 @@ int s5pc110_pm_target(unsigned int target_freq)
                         printk("frequency scaling error\n");
                         ret = -EINVAL;
                 }
-		
+
 		// ARM MCS value set
 		if (S5PC11X_FREQ_TAB  == 0) { // for 1G table
 			if ((prevIndex < 3) && (index >= 3)) {
@@ -358,7 +358,7 @@ int s5pc110_pm_target(unsigned int target_freq)
 				ret = __raw_readl(S5P_ARM_MCS);
 				ret = (ret & ~(0x3)) | 0x3;
 				__raw_writel(ret, S5P_ARM_MCS);
-			}		
+			}
 		} else {
 			DBG("\n\nERROR\n\n INVALID DVFS TABLE !!\n");
 			return ret;
@@ -385,7 +385,7 @@ int s5pc110_pm_target(unsigned int target_freq)
 		if (S5PC11X_FREQ_TAB  == 0) { // for 1G table
 			if ((prevIndex >= 3) && (index < 3)) {
 				ret = __raw_readl(S5P_ARM_MCS);
-				DBG("MDSvalue = %08x\n", ret);				
+				DBG("MDSvalue = %08x\n", ret);
 				ret = (ret & ~(0x3)) | 0x1;
 				__raw_writel(ret, S5P_ARM_MCS);
 			}
@@ -394,7 +394,7 @@ int s5pc110_pm_target(unsigned int target_freq)
 				ret = __raw_readl(S5P_ARM_MCS);
 				ret = (ret & ~(0x3)) | 0x1;
 				__raw_writel(ret, S5P_ARM_MCS);
-			}		
+			}
 		} else {
 			DBG("\n\nERROR\n\n INVALID DVFS TABLE !!\n");
 			return ret;
@@ -411,7 +411,7 @@ int s5pc110_pm_target(unsigned int target_freq)
 
 	prevIndex = index; // save to preIndex
 	mpu_clk->rate = target_freq * KHZ_T;
-	
+
 	/*change the frequency threshold level*/
 	store_up_down_threshold(s5pc110_thres_table[S5PC11X_FREQ_TAB][index][0], 
 				s5pc110_thres_table[S5PC11X_FREQ_TAB][index][1]);
@@ -534,7 +534,7 @@ static int s5pc110_target(struct cpufreq_policy *policy,
                         ret = -EINVAL;
                         goto s5pc110_target_end;
                 }
-		
+
 		// ARM MCS value set
 		if (S5PC11X_FREQ_TAB  == 0) { // for 1G table
 			if ((prevIndex < 3) && (index >= 3)) {
@@ -548,7 +548,7 @@ static int s5pc110_target(struct cpufreq_policy *policy,
 				ret = __raw_readl(S5P_ARM_MCS);
 				ret = (ret & ~(0x3)) | 0x3;
 				__raw_writel(ret, S5P_ARM_MCS);
-			}		
+			}
 		} else {
 			DBG("\n\nERROR\n\n INVALID DVFS TABLE !!\n");
 			return ret;
@@ -578,7 +578,7 @@ static int s5pc110_target(struct cpufreq_policy *policy,
 		if (S5PC11X_FREQ_TAB  == 0) { // for 1G table
 			if ((prevIndex >= 3) && (index < 3)) {
 				ret = __raw_readl(S5P_ARM_MCS);
-				DBG("MDSvalue = %08x\n", ret);				
+				DBG("MDSvalue = %08x\n", ret);
 				ret = (ret & ~(0x3)) | 0x1;
 				__raw_writel(ret, S5P_ARM_MCS);
 			}
@@ -587,7 +587,7 @@ static int s5pc110_target(struct cpufreq_policy *policy,
 				ret = __raw_readl(S5P_ARM_MCS);
 				ret = (ret & ~(0x3)) | 0x1;
 				__raw_writel(ret, S5P_ARM_MCS);
-			}		
+			}
 		} else {
 			DBG("\n\nERROR\n\n INVALID DVFS TABLE !!\n");
 			return ret;
@@ -630,7 +630,7 @@ s5pc110_target_end:
 #ifdef CONFIG_CPU_FREQ_LOG
 static void inform_dvfs_clock_status(struct work_struct *work) {
 //	if (prevIndex == )
-	printk("[Clock Info]...\n");	
+	printk("[Clock Info]...\n");
 	print_clocks();
 	schedule_delayed_work(&dvfs_info_print_work, 1 * HZ);
 }
@@ -698,8 +698,8 @@ static int __init s5pc110_cpu_init(struct cpufreq_policy *policy)
 
 
 	/*Clock out probe test*/
-#if 0 
-	
+#if 0
+
 	reg = __raw_readl(S5P_CLK_OUT);
 	reg &=~(0x1f << 12 | 0xf << 20);	// Mask Out CLKSEL bit field and DIVVAL
 	reg |= (0xf << 12 | 0x1 << 20);		// CLKSEL = ARMCLK/4, DIVVAL = 1 
@@ -731,7 +731,7 @@ static int __init s5pc110_cpu_init(struct cpufreq_policy *policy)
 		S5PC11X_FREQ_TAB = 1;
 		S5PC11X_MAXFREQLEVEL = 2; /* Min Freq. 200Mhz */
 		MAXFREQ_LEVEL_SUPPORTED = 4;
-		g_dvfs_high_lock_limit = 3;		
+		g_dvfs_high_lock_limit = 3;
 	}
 #else
 	if(s5pc110_verion==1){
@@ -747,7 +747,7 @@ static int __init s5pc110_cpu_init(struct cpufreq_policy *policy)
 		S5PC11X_FREQ_TAB = 1;
 		S5PC11X_MAXFREQLEVEL = 3; /* Min Freq. 200Mhz */
 		MAXFREQ_LEVEL_SUPPORTED = 4;
-		g_dvfs_high_lock_limit = 3;		
+		g_dvfs_high_lock_limit = 3;
 	}
 
 #endif
@@ -757,7 +757,7 @@ static int __init s5pc110_cpu_init(struct cpufreq_policy *policy)
       //spin_unlock_irqrestore(&g_cpufreq_lock, irqflags);
 
 //	set_voltage_dvs(step_curr); // for 1GHz Voltage setup
-      
+
 	prevIndex = 1;// we are using boot 800Mhz and kernel 1Ghz
 #ifdef CONFIG_CPU_FREQ_LOG
 	if(gbTransitionLogEnable == true)
@@ -770,7 +770,7 @@ static int __init s5pc110_cpu_init(struct cpufreq_policy *policy)
 	policy->cpuinfo.transition_latency = 40000;
 
 #ifdef CONFIG_HAS_WAKELOCK
-	//register_early_suspend(&s5pc11x_freq_suspend);	
+	//register_early_suspend(&s5pc11x_freq_suspend);
 #endif
 
 	#if ENABLE_DVFS_LOCK_HIGH
@@ -798,4 +798,3 @@ static int __init s5pc110_cpufreq_init(void)
 }
 
 arch_initcall(s5pc110_cpufreq_init);
-

@@ -119,7 +119,7 @@ enum
 
 	KERN_RTSIGNR=32,	/* Number of rt sigs queued */
 	KERN_RTSIGMAX=33,	/* Max queuable */
-	
+
 	KERN_SHMMAX=34,         /* long: Maximum shared memory segment */
 	KERN_MSGMAX=35,         /* int: Maximum size of a messege */
 	KERN_MSGMNB=36,         /* int: Maximum message queue size */
