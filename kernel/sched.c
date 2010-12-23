@@ -2693,6 +2693,48 @@ context_switch(struct rq *rq, struct task_struct *prev,
 }
 
 /*
+ * activate_task_local - activate a task on the local CPU
+ * The caller must be sure that p cannot disappear.  The old code
+ * seemed not to assume this.
+ */
+void activate_task_local(struct task_struct *p) {
+	unsigned long flags;
+	struct rq *rq;
+
+	rq = task_rq_lock(p, &flags);
+
+	BUG_ON(p->se.on_rq);
+
+	activate_task(rq, p, 0);
+	check_preempt_curr(rq, p, 0);
+
+	task_rq_unlock(rq, &flags);
+}
+EXPORT_SYMBOL(activate_task_local);
+
+/*
+ * deactivate_task_local - deactivate a task on the local CPU
+ * The caller must be sure that p cannot disappear.  The old code
+ * seemed not to assume this.
+ */
+void deactivate_task_local(struct task_struct *p) {
+	unsigned long flags;
+	struct rq *rq;
+
+	rq = task_rq_lock(p, &flags);
+
+	BUG_ON(! p->se.on_rq);
+
+	deactivate_task(rq, p, 0);
+
+	if (rq->curr == p)
+		resched_task(rq->curr);
+
+	task_rq_unlock(rq, &flags);
+}
+EXPORT_SYMBOL(deactivate_task_local);
+
+/*
  * nr_running, nr_uninterruptible and nr_context_switches:
  *
  * externally visible scheduler statistics: current number of runnable
