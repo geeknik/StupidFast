@@ -198,7 +198,7 @@ Boston, MA 02111-1307, USA.  */
 	it	hs
 	subhs	\dividend, \dividend, \divisor, lsr #2
 	cmp	\dividend, \divisor,  lsr #3
-	is	hs
+	it	hs
 	subhs	\dividend, \dividend, \divisor, lsr #3
 	cmp	\dividend, #1
 	mov	\divisor, \divisor, lsr #4
