@@ -88,6 +88,7 @@ ENTRY(__do_div64)
 	itt	cs
 	orrcs	yh, yh, ip
 	subcss	xh, xh, yl
+	it	ne
 	movnes	ip, ip, lsr #1
 	mov	yl, yl, lsr #1
 	bne	2b
@@ -193,7 +194,7 @@ ENTRY(__do_div64)
 
 	@ eq -> division by 1: obvious enough...
 9:	itttt	eq
-	moveq	y1, x1
+	moveq	yl, xl
 	moveq	yh, xh
 	moveq	xh, #0
 	moveq	pc, lr
