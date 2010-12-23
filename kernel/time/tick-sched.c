@@ -272,16 +272,6 @@ void tick_nohz_stop_sched_tick(int inidle)
 	ts = &per_cpu(tick_cpu_sched, cpu);
 
 	/*
-	 * Call to tick_nohz_start_idle stops the last_update_time from being
-	 * updated. Thus, it must not be called in the event we are called from
-	 * irq_exit() with the prior state different than idle.
-	 */
-	if (!inidle && !ts->inidle)
-		goto end;
-
-	now = tick_nohz_start_idle(cpu,ts);
-
-	/*
 	 * If this cpu is offline and it is the one which updates
 	 * jiffies, then give up the assignment and let it be taken by
 	 * the cpu which runs the tick timer next. If we don't drop
@@ -296,6 +286,10 @@ void tick_nohz_stop_sched_tick(int inidle)
 	if (unlikely(ts->nohz_mode == NOHZ_MODE_INACTIVE))
 		goto end;
 
+	if (!inidle && !ts->inidle)
+		goto end;
+
+	now = tick_nohz_start_idle(cpu,ts);
 	ts->inidle = 1;
 
 	if (need_resched())

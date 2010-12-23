@@ -347,7 +347,7 @@ LINUXINCLUDE    := -Iinclude \
 KBUILD_CPPFLAGS := -D__KERNEL__ -Dlinux
 
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
-		   -fno-strict-aliasing -fno-common -mthumb -ftree-vectorize \
+		   -fno-strict-aliasing -fno-common -marm -Uarm -ftree-vectorize \
 		   -Werror-implicit-function-declaration -fno-delete-null-pointer-checks \
 		   -mthumb-interwork -march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfp=3 \
 		   -mfloat-abi=softfp -fno-gcse -fomit-frame-pointer -mtune=strongarm \
