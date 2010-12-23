@@ -78,11 +78,11 @@ enum PMIC_VOLTAGE {
 static const unsigned int frequency_match_1GHZ[][2] = {
 /* frequency, Mathced VDD ARM voltage , Matched VDD INT*/
 #if 1
-        {1000000, 1275, 1100, 0},
-        {800000, 1175, 1100, 1},
-        {400000, 1025, 1100, 2},
-        {200000, 925, 1000, 4},
-        {100000, 925, 1000, 5},
+        {1000000, 1250, 1100, 0},
+        {800000, 1150, 1100, 1},
+        {400000, 1000, 1100, 2},
+        {200000, 900, 1000, 4},
+        {100000, 900, 1000, 5},
 #else //just for dvs test
         {1000000, 1250, 1100, 0},
         {800000, 1250, 1100, 1},
@@ -105,9 +105,9 @@ const unsigned int (*frequency_match[2])[2] = {
 };
 
 /*  voltage table */
-static const unsigned int voltage_table[20] = {
-	750, 800, 850, 900, 925, 950, 1000, 1025, 1050,
-	1100, 1150, 1175, 1200, 1250, 1275, 1300, 1350,
+static const unsigned int voltage_table[16] = {
+	750, 800, 850, 900, 950, 1000, 1050,
+	1100, 1150,, 1200, 1250, 1300, 1350,
 	1400, 1450, 1500
 };
 
@@ -150,7 +150,7 @@ const unsigned int (*dvs_volt_table[2])[3] = {
 };
 
 static const unsigned int dvs_arm_voltage_set[][2] = {
-	{DVSARM1, 1300},
+	{DVSARM1, 1275},
 	{DVSARM2, 1200},
 	{DVSARM3, 1050},
 	{DVSARM4, 950},
