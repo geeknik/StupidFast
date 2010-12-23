@@ -367,8 +367,8 @@ do {									\
 #define __put_user_asm_dword(x,__pu_addr,err)			\
 	__asm__ __volatile__(					\
  ARM(	"1:	strt	" __reg_oper1 ", [%1], #4\n")		\
- THUMB(	"1:	strt	" __reg_oper1 ", [%1]\n")
- THUMB(	"	add	%1, %1, #4\n")
+ THUMB(	"1:	strt	" __reg_oper1 ", [%1]\n")		\
+ THUMB(	"	add	%1, %1, #4\n")				\
 	"2:	strt	" __reg_oper0 ", [%1]\n"		\
 	"3:\n"							\
 	"	.section .fixup,\"ax\"\n"			\

@@ -42,7 +42,7 @@
 #define STR1W_SHIFT	0
 
 	.macro ldr1w ptr reg abort
-+100:
+100:
  ARM(	ldrt \reg, [\ptr], #4)
  THUMB(	ldrt \reg, [\ptr])
  THUMB(	add.w \ptr, \ptr, #4)
@@ -85,7 +85,7 @@
 	.endm
 
 	.macro str1b ptr reg cond=al abort
-	.infc \cond,al
+	.ifnc \cond,al
 	it \cond
 	.endif
 	str\cond\()b \reg, [\ptr], #1
