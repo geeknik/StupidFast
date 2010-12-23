@@ -44,7 +44,7 @@ ENTRY(copy_page)
 		itt	gt
                 ldmgtia r1!, {r3, r4, ip, lr}           @       4
                 bgt     1b                              @       1
-	PLD(	itt	eq
+	PLD(	itt	eq)
         PLD(    ldmeqia r1!, {r3, r4, ip, lr}   )
         PLD(    beq     2b                      )
                 ldmfd   sp!, {r4, pc}                   @       3
