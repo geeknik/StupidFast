@@ -348,10 +348,9 @@ KBUILD_CPPFLAGS := -D__KERNEL__ -Dlinux
 
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common -mthumb -ftree-vectorize \
-		   -Werror-implicit-function-declaration -Otime \
-	 	   -fno-delete-null-pointer-checks -mthumb-interwork -march=armv7-a \
-		   -mtune=cortex-a8 -mfpu=neon -mfp=3 -mfloat-abi=softfp -fno-gcse \
-		   -ftree-vectorize -fomit-frame-pointer -mtune=strongarm \
+		   -Werror-implicit-function-declaration -fno-delete-null-pointer-checks \
+		   -mthumb-interwork -march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfp=3 \
+		   -mfloat-abi=softfp -fno-gcse -fomit-frame-pointer -mtune=strongarm \
 	           -funroll-loops -ffast-math -fsingle-precision-constant \
 		   --param l2-cache-size=256 \
 		   --param l1-cache-size=32 \
